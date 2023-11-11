@@ -13,7 +13,7 @@ import AdminPage from "./pages/AdminPage";
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />}></Route>
+      <Route path="/" element={<LoginPage />}></Route>
       <Route path="/Registraion" element={<RegistrationPage />}></Route>
       <Route path="/InventoryDisplay" element={<AdminPage />}></Route>
     </Routes>
