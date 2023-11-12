@@ -12,7 +12,7 @@ const InventoryRegistration = () => {
 
   const handleInventoryRegistration  = async () =>{
     try {
-      const response = await fetch("http://localhost:8080/inventoryRegistration/register", {
+      const response = await fetch("http://localhost:8080/inventory/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
