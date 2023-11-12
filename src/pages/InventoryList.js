@@ -71,7 +71,7 @@ const InventoryList = (props) => {
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{item.inventoryNumber}</td>
-              <td>Active</td>
+              <td>{item.status}</td>
               <td>
                 {
                   <>
