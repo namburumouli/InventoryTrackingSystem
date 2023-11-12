@@ -11,7 +11,7 @@ const LoginPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-        //  "Access-Control-Allow-Origin": "*,http://192.168.29.7:8080",
+          //  "Access-Control-Allow-Origin": "*,http://192.168.29.7:8080",
         },
         body: JSON.stringify({
           email: email,
@@ -25,11 +25,24 @@ const LoginPage = () => {
 
       const data = await response.json();
       console.log("Login successful", data);
-      alert(data.role)
+      alert(data.message);
+      pageRoute(data)
     } catch (error) {
-      console.error("Error during login:", error.message);
+      alert("Error during login: Invalid Credentials", error.message);
     }
   };
+
+  const pageRoute= (data) => {
+    if(data.role === "Student"){
+      sessionStorage.setItem("login","true")
+      window.location.href = "/InventoryDisplay"
+    }else if(data.role === "labincharge"){
+      sessionStorage.setItem("login","true")
+      window.location.href = "/LabInchargePage"
+    }else if(data.role === "admin"){
+      window.location.href = "/Admin"
+    }
+  }
 
   const handleRegister = () => {
     window.location.href = "/Registraion";

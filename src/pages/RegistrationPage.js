@@ -3,24 +3,60 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 const RegistrationPage = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [role, setRole] = useState("Student");
   const [password, setPassword] = useState("");
   const [reenteredPassword, setReenteredPassword] = useState("");
 
-  const handleRegister = () => {
-    // Add your registration logic here
-    console.log("Registration clicked");
+  const handleRegister = async () => {
+    if(validateFields()){
+      try {
+        const response = await fetch("http://localhost:8080/auth/registration", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            password: reenteredPassword,
+            role :role
+          }),
+        });
+  
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+        alert(data.message);
+      } catch (error) {
+        alert(error.message);
+      }
+    }
   };
+
+  const validateFields = () =>{
+     if(password !== reenteredPassword){
+      alert("password and reenter password should be same")
+      return false 
+     }else if(!email.includes("@nitc.ac.in")){
+      alert("not a valid email mail should be <username>@nitc.ac.in")
+      return false 
+     }
+     else if(password === ""){
+      alert("password should not be empty")
+      return false 
+     }
+     return true
+  }
 
   return (
     <Container>
       <Title>New Profile Registration</Title>
       <Input
         type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <Select value={role} onChange={(e) => setRole(e.target.value)}>
         <option value="Student">Student</option>

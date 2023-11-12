@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const AdminPage = () => {
+const LabInchargePage = () => {
   return (
     <div>
       <Container>
@@ -14,21 +14,28 @@ const AdminPage = () => {
         </Button>
         <Button
           onClick={() => {
-            window.location.href = "/PendingComplaint";
+            window.location.href = "/InventoryRegistration";
           }}
         >
-          Pending Complaint
+          Inventory Registraion
+        </Button>
+        <Button
+          onClick={() => {
+            window.location.href = "/ComplaintRegistration";
+          }}
+        >
+          Complaint Registration
         </Button>
       </Container>
     </div>
   );
 };
 
-export default AdminPage;
+export default LabInchargePage;
 
 const Title = styled.h1`
-  text-align: center;
-`;
+text-align: center;
+`
 
 const Container = styled.div`
   display: flex;

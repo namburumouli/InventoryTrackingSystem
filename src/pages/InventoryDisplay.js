@@ -1,22 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import InventoryList from "./InventoryList";
 
 const InventoryDisplay = () => {
-  const [username, setUsername] = useState("");
-  const [role, setRole] = useState("Student");
-  const [password, setPassword] = useState("");
-  const [reenteredPassword, setReenteredPassword] = useState("");
+  const [inventoryList, setInventoryList] = useState("");
+  const [labNumber, setLabNumber] = useState("");
   const [getDate, setGetData] = useState(false);
+
+  useEffect(() => {
+    const sessionValue = sessionStorage.getItem("login");
+    if (sessionValue !== "true") {
+      window.location.href = "/login";
+    }
+  }, []);
+
+  const handleLogout = () => {
+    window.location.href = "/";
+    sessionStorage.removeItem("login");
+  };
 
   return (
     <div>
       <Container>
+        <LogoutButton onClick={() => handleLogout()}>Logout</LogoutButton>
         <Text>Inventory Catalogue</Text>
         <Wrapper>
           <WrapperContainer>
             <h1>Inventory List</h1>
-            <Select value={role} onChange={(e) => setRole(e.target.value)}>
+            <Select value={inventoryList} onChange={(e) => setInventoryList(e.target.value)}>
               <option value="KeyBoard">KeyBoard</option>
               <option value="Printer">Printer </option>
             </Select>
@@ -26,23 +37,27 @@ const InventoryDisplay = () => {
             <h1>Lab Number</h1>
             <Input
               type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Lab Number"
+              value={labNumber}
+              onChange={(e) => setLabNumber(e.target.value)}
             />
           </WrapperContainer>
         </Wrapper>
         <Button onClick={() => setGetData(!getDate)}>Get Data</Button>
       </Container>
       <InventoryListContainer>
-      {getDate ? <InventoryList /> : <></>}
-      </InventoryListContainer>
-     
+        {getDate ? <InventoryList inventoryList = {inventoryList} labNumber = {labNumber} /> : <></>}
+      </InventoryListContainer >
     </div>
   );
 };
 
 export default InventoryDisplay;
+
+const LogoutButton = styled.button`
+  padding: 1%;
+  margin-left: 90%;
+`;
 
 const Container = styled.div`
   align-items: center;
@@ -51,9 +66,9 @@ const Container = styled.div`
 `;
 
 const InventoryListContainer = styled.div`
-max-width:80%;
-margin:auto;
-`
+  max-width: 80%;
+  margin: auto;
+`;
 
 const Button = styled.button`
   margin-left: 48%;
