@@ -2,43 +2,105 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const PendingComplaintPage = () => {
-  const [complaints, setComplaints] = useState([]);
+  const [complaints, setComplaints] = useState();
   const [newTask, setNewTask] = useState("");
+  const [checked, setIsChecked] = useState();
 
   useEffect(() => {
-    setComplaints([
-      { text: "task1", completed: false },
-      { text: "task2", completed: false },
-      { text: "task3", completed: false },
-    ]);
+    getComplaint();
   }, []);
 
+  const getComplaint = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/inventory/getCompliant",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+
+      const data = await response.json();
+      setComplaints(data);
+      enableCheck();
+    } catch (error) {
+      alert("Error during login: Invalid Credentials", error.message);
+    }
+  };
+
+  const enableCheck = () => {
+    let checkStatus = [];
+
+    complaints?.existingInventory.map((complaint, index) => {
+      if (complaint.status === "Active") {
+        checkStatus[index] = true;
+      } else {
+        checkStatus[index] = false;
+      }
+    });
+    setIsChecked(checkStatus);
+  };
+
   const toggleTaskCompletion = (index) => {
-    const updatedComplaints = [...complaints];
-    updatedComplaints[index].completed = !updatedComplaints[index].completed;
-    setComplaints(updatedComplaints);
+    if (complaints.existingInventory[index].status === "Active") {
+      complaints.existingInventory[index].status = "Under Maintenance";
+    } else {
+      complaints.existingInventory[index].status = "Active";
+    }
+    console.log("data", complaints);
   };
 
   const handleClickApprove = () => {
-    const updatedComplaints = [...complaints];
-    console.log("updatedComplaints", updatedComplaints);
-    let data = updatedComplaints.filter((complaints,index) => {if(!complaints.completed) return complaints})
-    setComplaints(data)
+    updateDate()
+  };
+
+  const updateDate = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/inventory/updateInventories",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            complaints
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Approval Failed");
+      }
+      const data = await response.json();
+      alert(data.message);
+      getComplaint()
+
+    } catch (error) {
+      alert("Error ", error.message);
+      getComplaint()
+    }
   };
 
   return (
     <Container>
       <Title>Pending Complaints</Title>
       <TaskContainer>
-        {complaints.map((complaints, index) => (
+        {complaints?.existingInventory.map((complaint, index) => (
           <Task key={index}>
             <Checkbox
               type="checkbox"
-              checked={complaints.completed}
+              checked={checked[index]}
               onChange={() => toggleTaskCompletion(index)}
             />
-            <TaskText completed={complaints.completed}>
-              {complaints.text}
+            <TaskText completed={complaint.completed}>
+              {complaint.inventoryNumber} - {complaint.comments}
             </TaskText>
           </Task>
         ))}

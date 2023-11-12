@@ -4,12 +4,46 @@ import styled from "styled-components";
 const ComplaintRegistration = () => {
   const [category, setCategory] = useState();
   const [labNumber, setLabNumber] = useState("");
+  const [inventoryNumber, setInventoryNumber] = useState("");
   const [comments, setComments] = useState("");
   const [loadItemNumber, setLoadItemNumber] = useState(false);
 
   const handleEnterKeyPress = (e) => {
     if (e.key === "Enter") {
       setLoadItemNumber(true);
+    }
+  };
+
+  const handleSubmit = () =>{
+    registerComplaint()
+
+  }
+
+  const registerComplaint = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/inventory/compliant",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            //  "Access-Control-Allow-Origin": "*,http://192.168.29.7:8080",
+          },
+          body: JSON.stringify({
+            InventoryNumber: inventoryNumber,
+            Comments:comments
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+
+      const data = await response.json();
+     alert(data.message)
+    } catch (error) {
+      alert("Error during login: Invalid Credentials", error.message);
     }
   };
 
@@ -23,7 +57,7 @@ const ComplaintRegistration = () => {
           <option value="Printer">Printer </option>
         </Select>
       </WrapperContainer>
-      <Input
+      {/* <Input
         type="text"
         placeholder="Lab Number"
         value={labNumber}
@@ -32,13 +66,21 @@ const ComplaintRegistration = () => {
           setLoadItemNumber(false);
         }}
         onKeyDown={handleEnterKeyPress}
-      />
+      /> */}
       {loadItemNumber && (
         <Select value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value="KeyBoard">KeyBoard</option>
           <option value="Printer">Printer </option>
         </Select>
       )}
+      <Input
+        type="text"
+        placeholder="InventoryNumber"
+        value={inventoryNumber}
+        onChange={(e) => {
+          setInventoryNumber(e.target.value);
+        }}
+      />
 
       <Input
         type="text"
@@ -48,7 +90,7 @@ const ComplaintRegistration = () => {
           setComments(e.target.value);
         }}
       />
-      <Button>Submit</Button>
+      <Button onClick={() =>handleSubmit()}>Submit</Button>
     </Container>
   );
 };
