@@ -17,11 +17,10 @@ const InventoryList = (props) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            //  "Access-Control-Allow-Origin": "*,http://192.168.29.7:8080",
           },
           body: JSON.stringify({
             LabNumber: props.labNumber,
-            Category: "keyboard",
+            Category: props.inventoryList,
           }),
         }
       );
@@ -32,27 +31,21 @@ const InventoryList = (props) => {
 
       const data = await response.json();
       setItemData(data);
-      console.log("data", itemsData);
     } catch (error) {
       alert("Error during login: Invalid Credentials", error.message);
     }
   };
 
-  // const itemsData = [
-  //   {
-  //     serialNumber: 1,
-  //     itemNumber: "ABC123",
-  //     status: "Active",
-  //     barcode: "123456789",
-  //   },
-  //   {
-  //     serialNumber: 2,
-  //     itemNumber: "XYZ789",
-  //     status: "Under Maintanence",
-  //     barcode: "987654321",
-  //   },
-  //   // Add more items as needed
-  // ];
+  const downloadBarcode = (barcodeValue) => {
+    const canvas = document.createElement("canvas");
+    Barcode.toCanvas(canvas, barcodeValue, { width: 2, height: 30 });
+    const dataURL = canvas.toDataURL("image/png");
+
+    const link = document.createElement("a");
+    link.href = dataURL;
+    link.download = "barcode.png";
+    link.click();
+  };
 
   return (
     <Container>
@@ -63,9 +56,9 @@ const InventoryList = (props) => {
             <th>Item Number</th>
             <th>Status</th>
             <th>Barcode</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        {console.log("itemdate", itemsData)}
         <tbody>
           {itemsData?.result?.map((item, index) => (
             <tr key={index}>
@@ -73,11 +66,12 @@ const InventoryList = (props) => {
               <td>{item.inventoryNumber}</td>
               <td>{item.status}</td>
               <td>
-                {
-                  <>
-                    <Barcode value={item.inventoryNumber} />
-                  </>
-                }
+                <Barcode value={item.inventoryNumber} />
+              </td>
+              <td>
+                <button onClick={() => downloadBarcode(item.inventoryNumber)}>
+                  Download Barcode
+                </button>
               </td>
             </tr>
           ))}
@@ -107,5 +101,9 @@ const Table = styled.table`
 
   th {
     background-color: #f2f2f2;
+  }
+
+  button {
+    cursor: pointer;
   }
 `;

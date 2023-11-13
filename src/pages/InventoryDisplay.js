@@ -8,10 +8,10 @@ const InventoryDisplay = () => {
   const [getDate, setGetData] = useState(false);
 
   useEffect(() => {
-    const sessionValue = sessionStorage.getItem("login");
-    if (sessionValue !== "true") {
-      window.location.href = "/login";
-    }
+    // const sessionValue = sessionStorage.getItem("login");
+    // if (sessionValue !== "true") {
+    //   window.location.href = "/login";
+    // }
   }, []);
 
   const handleLogout = () => {
@@ -28,6 +28,7 @@ const InventoryDisplay = () => {
           <WrapperContainer>
             <h1>Inventory List</h1>
             <Select value={inventoryList} onChange={(e) => setInventoryList(e.target.value)}>
+              <option value="Select">Select</option>
               <option value="KeyBoard">KeyBoard</option>
               <option value="Printer">Printer </option>
             </Select>
@@ -46,7 +47,7 @@ const InventoryDisplay = () => {
         <Button onClick={() => setGetData(!getDate)}>Get Data</Button>
       </Container>
       <InventoryListContainer>
-        {getDate ? <InventoryList inventoryList = {inventoryList} labNumber = {labNumber} /> : <></>}
+        {getDate && inventoryList !== ""  && inventoryList !== "Select"? <InventoryList inventoryList = {inventoryList} labNumber = {labNumber} /> : <>{alert("Please Select InventoryItem")}</>}
       </InventoryListContainer >
     </div>
   );
