@@ -36,7 +36,7 @@ const LoginPage = () => {
     if(data.role === "Student"){
       sessionStorage.setItem("login","true")
       window.location.href = "/InventoryDisplay"
-    }else if(data.role === "labincharge"){
+    }else if(data.role === "Lab Incharge"){
       sessionStorage.setItem("login","true")
       window.location.href = "/LabInchargePage"
     }else if(data.role === "admin"){

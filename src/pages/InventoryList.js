@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import ReactDOM from "react-dom";  // Import ReactDOM
 import styled from "styled-components";
 import Barcode from "react-barcode";
+import html2canvas from "html2canvas";
 
 const InventoryList = (props) => {
   const [itemsData, setItemData] = useState();
+  const barcodeRef = useRef(null);  // Define barcodeRef using useRef
 
   useEffect(() => {
     fetchData();
@@ -36,11 +39,17 @@ const InventoryList = (props) => {
     }
   };
 
-  const downloadBarcode = (barcodeValue) => {
-    const canvas = document.createElement("canvas");
-    Barcode.toCanvas(canvas, barcodeValue, { width: 2, height: 30 });
-    const dataURL = canvas.toDataURL("image/png");
+  const downloadBarcode = async (barcodeValue) => {
+    const tempDiv = document.createElement("div");
+    document.body.appendChild(tempDiv);
 
+    ReactDOM.render(<Barcode value={barcodeValue} ref={barcodeRef} />, tempDiv);
+
+    const canvas = await html2canvas(tempDiv);
+
+    document.body.removeChild(tempDiv);
+
+    const dataURL = canvas.toDataURL("image/png");
     const link = document.createElement("a");
     link.href = dataURL;
     link.download = "barcode.png";
@@ -66,7 +75,7 @@ const InventoryList = (props) => {
               <td>{item.inventoryNumber}</td>
               <td>{item.status}</td>
               <td>
-                <Barcode value={item.inventoryNumber} />
+                <Barcode value={item.inventoryNumber} ref={barcodeRef} />
               </td>
               <td>
                 <button onClick={() => downloadBarcode(item.inventoryNumber)}>

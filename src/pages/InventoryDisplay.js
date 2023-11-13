@@ -47,7 +47,7 @@ const InventoryDisplay = () => {
         <Button onClick={() => setGetData(!getDate)}>Get Data</Button>
       </Container>
       <InventoryListContainer>
-        {getDate && inventoryList !== ""  && inventoryList !== "Select"? <InventoryList inventoryList = {inventoryList} labNumber = {labNumber} /> : <>{alert("Please Select InventoryItem")}</>}
+        {getDate ? <InventoryList inventoryList = {inventoryList} labNumber = {labNumber} /> : <></>}
       </InventoryListContainer >
     </div>
   );
